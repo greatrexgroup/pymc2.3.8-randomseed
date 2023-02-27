@@ -60,7 +60,7 @@ class MCMC(Sampler):
     def __init__(self, input=()
 
 , db='ram',
-                 name='MCMC', calc_deviance=True, **kwds):
+                 name='MCMC', calc_deviance=True, random_seed=None, **kwds):
         """Initialize an MCMC instance.
 
         :Parameters:
@@ -74,19 +74,21 @@ class MCMC(Sampler):
           - **kwds :
               Keywords arguments to be passed to the database instantiation method.
         """
-        
+
         if isinstance(input, Model):
             message = 'Instantiating a Model object directly is deprecated. '
             message += 'We recommend passing variables directly to the Model subclass.'
             warnings.warn(message)
             input = input.variables
-        
+
+
         Sampler.__init__(
             self,
             input,
             db,
             name,
             calc_deviance=calc_deviance,
+            random_seed=random_seed,
             **kwds)
 
         self._sm_assigned = False
@@ -243,7 +245,7 @@ class MCMC(Sampler):
             the number of untuned successive tuning interval needed to be reach in order for
             the burn-in phase to be done (If burn_till_tuned is True).
         """
-
+        
         self.assign_step_methods(verbose=verbose)
         
         iter, burn, thin = np.floor([iter, burn, thin]).astype(int)

@@ -13,7 +13,7 @@ __all__ = ['Model', 'Sampler']
 """ Summary"""
 
 from numpy import zeros, floor
-from numpy.random import randint
+from numpy.random import randint, seed
 from . import database
 from .PyMCObjects import Stochastic, Deterministic, Node, Variable, Potential
 from .Container import Container, ObjectContainer
@@ -80,13 +80,18 @@ class Model(ObjectContainer):
 
     def __init__(self, input=()
 
-, name=None, verbose=-1):
+, name=None, random_seed=None, verbose=-1):
         """Initialize a Model instance.
 
         :Parameters:
           - input : module, list, tuple, dictionary, set, or object.
               Model definition, in terms of Stochastics, Deterministics, Potentials and Containers.
         """
+        ### DG ADDITION ###
+        self.random_seed = random_seed
+        if self.random_seed is not None:
+            print("random seed baby 124", self.random_seed)
+        ### DG ADDITION ###
 
         # Get stochastics, deterministics, etc.
         ObjectContainer.__init__(self, input)
@@ -115,7 +120,10 @@ class Model(ObjectContainer):
         """
         Seed new initial values for the stochastics.
         """
-
+        ### DG ADDITION ###
+        seed(self.random_seed)
+        ### DG ADDITION ###
+        
         for generation in self.generations:
             for s in generation:
                 try:
@@ -169,7 +177,7 @@ class Sampler(Model):
     def __init__(self, input=()
 
 , db='ram', name='Sampler',
-                 reinit_model=True, calc_deviance=False, verbose=0, **kwds):
+                 reinit_model=True, calc_deviance=False, random_seed=None, verbose=0, **kwds):
         """Initialize a Sampler instance.
 
         :Parameters:
@@ -188,7 +196,7 @@ class Sampler(Model):
 
         # Initialize superclass
         if reinit_model:
-            Model.__init__(self, input, name, verbose)
+            Model.__init__(self, input, name, random_seed, verbose)
 
         # Initialize deviance, if asked
         if calc_deviance:
