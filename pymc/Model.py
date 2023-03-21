@@ -13,7 +13,13 @@ __all__ = ['Model', 'Sampler']
 """ Summary"""
 
 from numpy import zeros, floor
-from numpy.random import randint, seed
+
+# DG addition
+# # from numpy.random import randint, seed
+import random
+from numpy.random import randint, seed, RandomState
+# DG addition
+
 from . import database
 from .PyMCObjects import Stochastic, Deterministic, Node, Variable, Potential
 from .Container import Container, ObjectContainer
@@ -122,6 +128,8 @@ class Model(ObjectContainer):
         """
         ### DG ADDITION ###
         seed(self.random_seed)
+        RandomState(self.random_seed)
+        random.seed(self.random_seed)
         ### DG ADDITION ###
         
         for generation in self.generations:
